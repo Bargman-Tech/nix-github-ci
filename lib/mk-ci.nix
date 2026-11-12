@@ -46,9 +46,11 @@ let
   ipScanExcludes = fleet.ipScanExcludes or [ ];
 
   # Security-scan grep chain: consumer excludes first (byte-order matters
-  # for the generated workflow), then the generic excludes.
+  # for the generated workflow), then the generic excludes. NOTE: regular
+  # double-quoted strings — a single-line ''…'' indented string would strip
+  # its own leading space (min-indent) and corrupt the chain spacing.
   ipFilters = lib.concatMapStrings
-    (p: '' | grep -v "${p}"'')
+    (p: " | grep -v \"${p}\"")
     (ipScanExcludes ++ [ "127.0.0.1" "documentation" ]);
 
   # --- Machine list derivation (single source of truth) ---
